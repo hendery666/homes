@@ -1,187 +1,104 @@
-# Homes - Home Business Platform
+# Homes
 
-A web application for discovering and connecting with local home businesses in Singapore.
+Homes is a web app for discovering and supporting home-based businesses in Singapore. Customers browse listings by category or on a map, chat with sellers, book services and leave verified reviews. Sellers can create listings, see how they're performing and pay to boost them.
 
-## Prerequisites
-
-**IMPORTANT:** Ensure you have the following installed:
-- **Node.js** (version 20.x or higher) 
-- **npm** (comes with Node.js) 
-
-To check your versions:
-```bash
-node --version  # Should be v20.x.x or higher
-npm --version   # Should be 10.x.x or higher
-```
-
-## Installation Steps
-
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd wad-project
-```
-
-### 2. Install Dependencies
-```bash
-npm install
-```
-
-**Note:** If you encounter errors during installation, try:
-```bash
-npm install --legacy-peer-deps
-```
-
-### 3. Set Up Environment Variables
-Create a `.env` file in the root directory (see "Environment Variables" section below).
-
-## Running the Application Locally
-
-### Option 1: Run Both Servers (Recommended)
-Open **TWO terminal windows** and run:
-
-**Terminal 1 - Frontend:**
-```bash
-npm run dev
-```
-
-**Terminal 2 - Backend (for payments):**
-```bash
-npm run server
-```
-
-### Option 2: Run Frontend Only
-If you don't need payment features for testing:
-```bash
-npm run dev
-```
-
-### Access the Application
-- **Frontend:** http://localhost:5173
-- **Backend:** http://localhost:4242 (only when server is running)
-
-**The application should now be accessible in your browser!**
-
-## Environment Variables
-
-Create a `.env` file in the root directory with the following:
-
-```env
-# Firebase Configuration
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
-
-# Google Maps
-VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-
-# Stripe Configuration
-VITE_STRIPE_PUBLIC_KEY=your_stripe_public_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-
-# Stripe Price IDs (from Stripe Dashboard → Products)
-PRICE_ID_1D=price_id_for_1_day
-PRICE_ID_7D=price_id_for_7_days
-PRICE_ID_30D=price_id_for_30_days
-
-# Backend API URL
-# For LOCAL testing: http://localhost:4242
-# For PRODUCTION: your_production_backend_url
-VITE_API_URL=http://localhost:4242
-
-# Frontend URL (for production deployment)
-FRONTEND_URL=http://localhost:5173
-```
-
-### Important: Local vs Production Configuration
-
-**For Local Development:**
-- Set `VITE_API_URL=http://localhost:4242`
-- Set `FRONTEND_URL=http://localhost:5173`
-- Run both frontend (`npm run dev`) and backend (`npm run server`) servers
-
-**For Production Deployment:**
-- Set `VITE_API_URL` to your deployed backend URL (e.g., Render, Heroku)
-- Set `FRONTEND_URL` to your deployed frontend URL (e.g., Vercel, Netlify)
-- **Important:** After changing environment variables, restart the dev server for changes to take effect
-
-## Testing Payments
-
-Use Stripe test cards for testing payment features:
-- Card: `4242 4242 4242 4242`
-- Expiry: Any future date
-- CVC: Any 3 digits
-- ZIP: Any 5 digits
-
-## Troubleshooting
-
-### Common Issues
-
-**1. "Module not found" or dependency errors**
-```bash
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**2. Port already in use (5173 or 4242)**
-- Close other applications using these ports
-- Or change the port in `vite.config.js` (frontend) or `server.js` (backend)
-
-**3. Firebase authentication not working**
-- Verify your `.env` file has correct Firebase credentials
-- Ensure Firebase project is set up correctly
-
-**4. White screen or blank page**
-- Check browser console for errors (F12)
-- Verify `npm run dev` is running without errors
-- Try clearing browser cache
-
-**5. Payment features not working**
-- Ensure backend server is running (`npm run server`)
-- Check Stripe API keys in `.env` file
-- Verify `VITE_API_URL` is set correctly in `.env`:
-  - Local: `VITE_API_URL=http://localhost:4242`
-  - Production: `VITE_API_URL=your_production_backend_url`
-- After changing `.env`, restart the frontend dev server
-
-**6. CORS errors when testing payments locally**
-- The backend `server.js` is configured to accept requests from both `http://localhost:5173` and production URLs
-- If you see CORS errors:
-  1. Verify your frontend is running on `http://localhost:5173`
-  2. Restart the backend server (`npm run server`)
-  3. Clear browser cache and refresh
-- If using a different port (e.g., 5174), update `allowedOrigins` array in `server.js`
-
-**7. "Cannot connect to payment server" error**
-- This means the frontend can't reach the backend
-- Check that:
-  1. Backend server is running on port 4242 (`npm run server`)
-  2. `.env` has `VITE_API_URL=http://localhost:4242` for local testing
-  3. You've restarted the frontend after changing `.env`
-  4. No firewall is blocking localhost connections
+Built with Vue 3, Firebase and Stripe for the WAD2 module.
 
 ## Features
 
-- User authentication (Email/Password and Google Sign-In)
-- Browse businesses by category
-- Real-time messaging system
-- Booking system with QR codes
-- Reviews and ratings with unlock codes
-- Stripe payment integration for business boosting
-- Admin dashboard for managing reports
-- Dark mode support
-- Mobile-responsive design
+- **Explore:** browse listings by category, search, filter by distance, or use the map explorer
+- **Listings:** create and manage business listings with photos, opening hours and locations
+- **Chat:** real-time messaging between customers and sellers, with unread notifications
+- **Bookings:** request a time slot from a listing
+- **Verified reviews:** each listing has a QR code; customers scan it to unlock a review
+- **Boosting:** sellers pay through Stripe Checkout to feature a listing for 1 day, 7 days or 1 month
+- **Seller levels:** badges from Bronze to Diamond based on activity
+- **Profile analytics:** views, likes and reviews over time
+- **Admin:** dashboard and report moderation for admin accounts
+- **Accounts:** email/password or Google sign-in, email verification and password reset
+- **Dark mode** and mobile-friendly layouts
 
-## Tech Stack
+## Tech stack
 
-- **Frontend:** Vue.js 3, Bootstrap 5, Vite
-- **Backend:** Express.js (Node.js)
-- **Database:** Firebase Firestore
-- **Authentication:** Firebase Auth
-- **Payments:** Stripe
-- **Maps:** Google Maps API
-- **Icons:** Iconify
+| Area | Tools |
+| --- | --- |
+| Frontend | Vue 3, Vue Router, Vite, Bootstrap 5, Iconify, Chart.js |
+| Backend | Express server for Stripe Checkout (`server.js`) |
+| Data and auth | Firebase Auth, Cloud Firestore, Firebase Storage |
+| Maps | Google Maps JavaScript API (Places) |
+| Payments | Stripe Checkout |
+
+## Getting started
+
+You need **Node.js 20.19+ (or 22.12+)**, a Firebase project, a Google Maps API key, and a Stripe account in test mode.
+
+```bash
+git clone https://github.com/hendery666/homes.git
+cd homes
+npm install
+cp .env.example .env   # then fill in your keys
+```
+
+Run the frontend and the payment server in two terminals:
+
+```bash
+npm run dev      # frontend → http://localhost:5173
+npm run server   # payment server → http://localhost:4242 (only needed for boosting)
+```
+
+Restart `npm run dev` after changing `.env`.
+
+## Environment variables
+
+See [`.env.example`](.env.example) for the full list.
+
+| Variable | Used by | What it is |
+| --- | --- | --- |
+| `VITE_FIREBASE_*` | Frontend | Your Firebase web app config (Project settings → Your apps) |
+| `VITE_GOOGLE_MAPS_API_KEY` | Frontend | Google Maps JavaScript API key with the Places API enabled |
+| `VITE_API_URL` | Frontend | URL of the payment server (`http://localhost:4242` locally) |
+| `STRIPE_SECRET_KEY` | Server | Stripe secret key (use a `sk_test_...` key) |
+| `PRICE_ID_1D`, `PRICE_ID_7D`, `PRICE_ID_30D` | Server | Stripe Price IDs for the three boost plans |
+| `FRONTEND_URL` | Server | Where Stripe sends users back after checkout |
+
+## How boosting works
+
+1. The seller picks a plan on `/boosting` and the frontend asks the server for a Stripe Checkout session.
+2. After paying, Stripe redirects back to `/boosting?status=success&session_id=...`.
+3. The frontend calls `GET /verify-checkout-session` on the server, which checks with Stripe that the session was paid and returns the listing and plan.
+4. Only then is the listing's `boostedUntil` extended. The session ID is saved in the listing's `boostSessionIds`, so the same payment can't be applied twice.
+
+Your Firestore rules must let a listing's owner update `boostedUntil` and `boostSessionIds`.
+
+For test payments, use card `4242 4242 4242 4242` with any future expiry date and any CVC. More test cards are listed in [docs/STRIPE_TEST_CARDS.md](docs/STRIPE_TEST_CARDS.md).
+
+## Deployment
+
+- **Frontend:** Vercel. `vercel.json` already sets up the build and the single-page-app rewrites. Add the `VITE_*` variables in the Vercel project settings.
+- **Payment server:** any Node host (for example Render) running `npm start`. Set the server variables, and set `FRONTEND_URL` to your Vercel URL. If your frontend runs on a different domain, add it to `allowedOrigins` in `server.js`.
+
+## Project structure
+
+```
+├── index.html
+├── server.js                 # Stripe Checkout server
+├── public/                   # static files (favicon, email-verified page)
+├── docs/                     # Git workflow notes, Stripe test cards
+└── src/
+    ├── main.js               # app entry: Bootstrap, theme, router, global Icon component
+    ├── App.vue               # layout: navbar, page, footer, toasts
+    ├── firebase.js           # Firebase setup
+    ├── router/index.js       # routes and auth/admin guards
+    ├── components/           # pages and UI components
+    ├── composables/          # dark mode, toasts, seller levels, message notifications
+    ├── helpers/ and utils/   # chat helper, review QR codes, Google Maps loader
+    └── assets/               # theme, images, badges, category art
+```
+
+## Troubleshooting
+
+- **Blank page or "Firebase: Error (auth/invalid-api-key)":** check the `VITE_FIREBASE_*` values in `.env` and restart `npm run dev`.
+- **Map doesn't load:** check `VITE_GOOGLE_MAPS_API_KEY`, and make sure billing and the Places API are enabled in Google Cloud.
+- **"Cannot connect to the payment server":** start `npm run server` and check that `VITE_API_URL` matches it.
+- **CORS error on checkout:** the frontend's URL must be in `allowedOrigins` in `server.js`.
+- **Port already in use:** stop the other process, or change the port in `vite.config.js` or set `PORT` for the server.
