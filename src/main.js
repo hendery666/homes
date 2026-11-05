@@ -1,6 +1,7 @@
-import './assets/main.css'
-import 'bootstrap'
+// Bootstrap first, then our theme, so theme styles (fonts, colours) take priority
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap'
+import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'

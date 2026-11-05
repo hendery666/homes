@@ -1,35 +1,5 @@
-/* @import './base.css'; */
-
+/* Global styles. Fonts are loaded in index.html; design tokens live in theme.css. */
 @import './theme.css';
-
-@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-/* main.css */
-/* * { margin: 0; 
-    padding: 0; 
-    box-sizing: border-box;
- }
-body { 
-    margin: 0; 
-    background: linear-gradient(135deg, #c65dd3, #7b4eff); }
-html, body, #app { 
-    height: 100%; 
-
-} */
-
-
-/* #app,body {
-    background: rgb(245, 239, 239);
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif; 
-    /* padding-left: 200px;
-    padding-right: 200px;   
-    
-
-} */
 
 html, body, #app {
   min-height: 100%;
@@ -41,8 +11,3 @@ html, body, #app {
 }
 
 .bg-page { background: var(--color-bg-main) !important; }
-
-
-
-
-

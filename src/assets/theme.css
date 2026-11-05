@@ -336,3 +336,81 @@
   .display-3 { font-size: clamp(2rem, 4vw, 4rem) !important; }
   .display-4 { font-size: clamp(1.75rem, 3.5vw, 3.5rem) !important; }
 }
+
+/* ============================================
+   POLISH: Bootstrap in brand colours, focus and motion
+   ============================================ */
+
+/* Make Bootstrap's own primary colour (links, text-primary, focus rings) match the brand */
+:root {
+  --bs-primary: var(--color-primary);
+  --bs-primary-rgb: 75, 42, 166;
+  --bs-primary-text-emphasis: var(--color-primary-hover);
+  --bs-primary-bg-subtle: var(--color-primary-pale);
+  --bs-primary-border-subtle: var(--color-border-purple);
+  --bs-link-color: var(--color-primary);
+  --bs-link-color-rgb: 75, 42, 166;
+  --bs-link-hover-color: var(--color-primary-hover);
+  --bs-link-hover-color-rgb: 61, 34, 135;
+  --bs-focus-ring-color: rgba(75, 42, 166, 0.25);
+  --bs-body-font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-primary-pale);
+  color: var(--color-primary-hover);
+}
+
+/* Form controls: purple focus and checked states instead of Bootstrap blue */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+
+.form-check-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.form-check-input:focus {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+
+.form-range::-webkit-slider-thumb { background-color: var(--color-primary); }
+.form-range::-moz-range-thumb { background-color: var(--color-primary); }
+
+/* Clear focus outline for keyboard users (mouse clicks are unaffected) */
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+/* Respect the "reduce motion" accessibility setting */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hover-lift:hover,
+  .hover-scale:hover,
+  .hover-brightness:hover {
+    transform: none;
+  }
+}
