@@ -1,5 +1,4 @@
 <script setup>
-import SearchBar from './SearchBar.vue'
 import ChatBox from './ChatBox.vue'
 </script>
 

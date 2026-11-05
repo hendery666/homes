@@ -3,7 +3,7 @@ import StartChatButton from './StartChatButton.vue'
 import { computed, ref, onMounted, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { db } from '@/firebase'
-import { collection, query, doc, getDoc, getDocs } from 'firebase/firestore'
+import { collection, query, getDocs } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import SellerBadge from './SellerBadge.vue'
 

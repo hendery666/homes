@@ -1,10 +1,11 @@
 <script setup>
+import { loadGoogleMaps } from '@/utils/loadGoogleMaps'
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { db, auth } from '@/firebase'
 import {
   collection, query, where, limit as fsLimit, getDocs,
-  doc, updateDoc, addDoc, serverTimestamp, getDoc, orderBy, increment
+  doc, updateDoc, addDoc, serverTimestamp, getDoc, orderBy
 } from 'firebase/firestore'
 import { useToast } from '@/composables/useToast'
 import { startChatWithUser } from '@/helpers/chatHelper'
@@ -502,66 +503,24 @@ const mapsLoadError = ref(false)
 const mapsLoading = ref(false)
 
 /* Load Maps JS once */
-// robust loader: safe to paste over your existing function
-
-
-// ✅ tiny loader used only if window.google is missing
-let mapsLoadingPromise
+// Google Maps is loaded through the shared loader so it is only added to the page once
 function ensureMapsLoaded() {
   if (typeof window !== 'undefined' && window.google?.maps) {
     mapsLoadError.value = false
     return Promise.resolve()
   }
-  if (mapsLoadingPromise) return mapsLoadingPromise
-  const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-  if (!key) {
-    console.warn('[Maps] Missing VITE_GOOGLE_MAPS_API_KEY')
-    mapsLoadError.value = true
-    return Promise.reject(new Error('Missing API key'))
-  }
-
   mapsLoading.value = true
-  mapsLoadingPromise = new Promise((resolve, reject) => {
-    const existing = document.querySelector('script[data-gmaps="1"]')
-    if (existing) {
-      const wait = () => {
-        if (window.google?.maps) {
-          mapsLoading.value = false
-          mapsLoadError.value = false
-          resolve()
-        } else {
-          setTimeout(wait, 40)
-        }
-      }
-      wait()
-      return
-    }
-    const s = document.createElement('script')
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&libraries=places`
-    s.async = true
-    s.defer = true
-    s.dataset.gmaps = '1'
-    s.onload = () => {
-      const wait = () => {
-        if (window.google?.maps) {
-          mapsLoading.value = false
-          mapsLoadError.value = false
-          resolve()
-        } else {
-          setTimeout(wait, 25)
-        }
-      }
-      wait()
-    }
-    s.onerror = () => {
+  return loadGoogleMaps()
+    .then(() => {
+      mapsLoading.value = false
+      mapsLoadError.value = false
+    })
+    .catch((err) => {
       mapsLoading.value = false
       mapsLoadError.value = true
-      console.error('[Maps] Failed to load Google Maps JS - Check your API key, billing, and network connection')
-      reject(new Error('[Maps] Failed to load Google Maps JS'))
-    }
-    document.head.appendChild(s)
-  })
-  return mapsLoadingPromise
+      console.error(err.message)
+      throw err
+    })
 }
 
 // 🔁 When the drawer opens, (1) wait for DOM, (2) ensure maps, (3) init map, (4) resize

@@ -102,7 +102,7 @@
   import { ref, computed, onMounted } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import ListingCard from "@/components/ListingCard.vue";
-  import { getFirestore, doc, getDoc, updateDoc, Timestamp, increment } from "firebase/firestore";
+  import { getFirestore, doc, getDoc, updateDoc, Timestamp, arrayUnion } from "firebase/firestore";
   import { useToast } from "@/composables/useToast";
 
   const db = getFirestore();
@@ -128,24 +128,28 @@
   function formatPrice(cents) {
     return `$${(cents / 100).toFixed(2)}`;
   }
+
+  // Payment server URL: VITE_API_URL in production, localhost:4242 in development
+  function getApiUrl() {
+    return import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:4242" : "");
+  }
   
   /* ---------------- Load listing ---------------- */
   onMounted(async () => {
     const listingId = route.query.listing || route.query.listingId;
     const status = route.query.status;
-    const plan = route.query.plan;
-  
-    // ✅ Handle success redirect from Stripe
-    if (status === "success" && listingId && plan) {
-      await applyBoost(listingId, plan);
+    const sessionId = route.query.session_id;
 
-      // Show success toast
-      const planNames = { "1day": "1 Day", "7days": "7 Days", "1month": "1 Month" };
-      const planName = planNames[plan] || plan;
-      toast.success(`Success! Your listing has been boosted for ${planName}. It will receive increased visibility on Explore & Trending pages!`);
-
+    // ✅ Handle success redirect from Stripe: confirm the payment with the server first,
+    // so a boost can't be applied just by visiting a "success" URL.
+    if (status === "success") {
+      await handleCheckoutReturn(sessionId);
       router.replace("/profile#my");
       return;
+    }
+
+    if (status === "failed") {
+      toast.info("Checkout was cancelled. Your listing was not boosted.");
     }
   
     if (!listingId) {
@@ -187,10 +191,8 @@
     if (!listing.value) return;
     checkingOut.value = true;
     try {
-      // Use VITE_API_URL if set, otherwise use localhost for dev
       // For production/Vercel, set VITE_API_URL in Vercel environment variables
-      const apiUrl = import.meta.env.VITE_API_URL || 
-        (import.meta.env.DEV ? 'http://localhost:4242' : '');
+      const apiUrl = getApiUrl();
       
       if (!apiUrl) {
         throw new Error('VITE_API_URL is not configured. Please set it in your environment variables.');
@@ -244,8 +246,36 @@
     // and on success we redirect, so it doesn't matter
   }
   
+  /* ---------------- Verify payment after Stripe redirect ---------------- */
+  async function handleCheckoutReturn(sessionId) {
+    if (!sessionId) {
+      toast.error("We couldn't confirm this payment. Your listing was not boosted.");
+      return;
+    }
+    try {
+      const res = await fetch(`${getApiUrl()}/verify-checkout-session?session_id=${encodeURIComponent(sessionId)}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.paid || !data.listingId || !data.planId) {
+        toast.error("We couldn't confirm this payment. Your listing was not boosted.");
+        return;
+      }
+
+      const applied = await applyBoost(data.listingId, data.planId, sessionId);
+      if (applied) {
+        const planNames = { "1day": "1 Day", "7days": "7 Days", "1month": "1 Month" };
+        const planName = planNames[data.planId] || data.planId;
+        toast.success(`Success! Your listing has been boosted for ${planName}. It will receive increased visibility on Explore & Trending pages!`);
+      }
+    } catch (err) {
+      console.error("Failed to verify checkout session:", err);
+      toast.error("Could not reach the payment server to confirm your boost. Please refresh to try again.");
+    }
+  }
+
   /* ---------------- Apply Boost (STACK TIME) ---------------- */
-  async function applyBoost(listingId, planId) {
+  // Returns true when the boost was applied. Each Stripe session is recorded on the
+  // listing (boostSessionIds) so refreshing or revisiting the success page can't stack it twice.
+  async function applyBoost(listingId, planId, sessionId) {
     let msToAdd = 0;
     if (planId === "1day") msToAdd = 1 * 24 * 60 * 60 * 1000;
     if (planId === "7days") msToAdd = 7 * 24 * 60 * 60 * 1000;
@@ -259,6 +289,10 @@
       let sellerId = null;
       if (snap.exists()) {
         const data = snap.data();
+        if (Array.isArray(data.boostSessionIds) && data.boostSessionIds.includes(sessionId)) {
+          toast.info("This boost has already been applied to your listing.");
+          return false;
+        }
         sellerId = data.userId;
         const currentBoostedUntil = data.boostedUntil;
   
@@ -272,6 +306,7 @@
   
       await updateDoc(ref, {
         boostedUntil: newBoostedUntil,
+        boostSessionIds: arrayUnion(sessionId),
       });
   
       console.log(`✅ Boost applied to ${listingId} until ${newBoostedUntil.toDate()}`);
@@ -296,12 +331,11 @@
         }
       }
   
-      // Success is already handled in onMounted when status === "success"
-      // This function is called from there, so we don't show alert here
-      // to avoid double alerts
+      return true;
     } catch (e) {
       console.error("❌ Failed to update boostedUntil:", e);
       toast.error("Boost payment succeeded, but failed to update listing. Please contact support or refresh the page.");
+      return false;
     }
   }
   </script>

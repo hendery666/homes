@@ -2,7 +2,6 @@
 import { addDoc, collection, doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore'
 import { auth, db, storage } from '@/firebase'
 import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { Icon } from '@iconify/vue';
 import { useDarkMode } from '@/composables/useDarkMode'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'

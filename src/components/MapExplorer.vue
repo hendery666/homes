@@ -138,10 +138,11 @@
 </template>
 
 <script setup>
+import { loadGoogleMaps } from '@/utils/loadGoogleMaps'
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { Icon } from '@iconify/vue'
 import { db } from '@/firebase'
-import { collection, getDocs, query, orderBy, limit, getDoc, doc, onSnapshot } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy, doc, onSnapshot } from 'firebase/firestore'
 import ListingDrawer from './ListingDrawer.vue'
 import NavBar from './NavBar.vue'
 
@@ -252,36 +253,9 @@ watch(filteredListings, (newListings) => {
 }, { immediate: true })
 
 // Load Google Maps API dynamically
+// Google Maps is loaded through the shared loader so it is only added to the page once
 function loadGoogleMapsScript() {
-  return new Promise((resolve, reject) => {
-    // Check if already loaded
-    if (window.google && window.google.maps) {
-      resolve()
-      return
-    }
-
-    // Check if script is already being loaded
-    if (document.querySelector('script[src*="maps.googleapis.com"]')) {
-      // Wait for it to load
-      const checkInterval = setInterval(() => {
-        if (window.google && window.google.maps) {
-          clearInterval(checkInterval)
-          resolve()
-        }
-      }, 100)
-      return
-    }
-
-    // Load the script
-    const script = document.createElement('script')
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
-    script.async = true
-    script.defer = true
-    script.onload = () => resolve()
-    script.onerror = () => reject(new Error('Failed to load Google Maps'))
-    document.head.appendChild(script)
-  })
+  return loadGoogleMaps()
 }
 
 // Calculate distance between two coordinates (Haversine formula)

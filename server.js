@@ -9,6 +9,10 @@ dotenv.config();
 const app = express();
 
 // ✅ Initialize Stripe securely
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.error("❌ STRIPE_SECRET_KEY is not set. Add it to your .env file (see .env.example).");
+  process.exit(1);
+}
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2022-11-15",
 });
@@ -73,7 +77,9 @@ app.post("/create-checkout-session", async (req, res) => {
         },
       ],
       // ✅ Dynamic success / cancel URLs for your live frontend
-      success_url: `${FRONTEND_URL}/boosting?status=success&plan=${planId}&listing=${listingId}`,
+      // Stripe fills in {CHECKOUT_SESSION_ID}; the frontend sends it back to
+      // /verify-checkout-session so a boost is only applied after a real payment.
+      success_url: `${FRONTEND_URL}/boosting?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${FRONTEND_URL}/boosting?status=failed`,
       metadata: {
         listingId,
@@ -85,6 +91,26 @@ app.post("/create-checkout-session", async (req, res) => {
   } catch (err) {
     console.error("❌ Stripe error:", err);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ Verify a completed Checkout Session before the frontend applies a boost
+app.get("/verify-checkout-session", async (req, res) => {
+  const sessionId = req.query.session_id;
+  if (!sessionId || typeof sessionId !== "string") {
+    return res.status(400).json({ error: "Missing session_id" });
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    res.json({
+      paid: session.payment_status === "paid",
+      listingId: session.metadata?.listingId || null,
+      planId: session.metadata?.planId || null,
+    });
+  } catch (err) {
+    console.error("❌ Stripe verify error:", err);
+    res.status(404).json({ error: "Checkout session not found" });
   }
 });
 

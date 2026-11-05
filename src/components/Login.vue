@@ -69,8 +69,6 @@ import {
 } from "firebase/auth";
 import {
   doc,
-  setDoc,
-  serverTimestamp,
   getDocs,
   collection,
   query,
@@ -161,7 +159,7 @@ export default {
         // Show success message
         this.showNotification("Login successful!", "success");
         setTimeout(() => {
-          this.$router.replace("/");
+          this.$router.replace(this.afterLoginPath());
         }, 1000);
       } catch (err) {
         // Simplify error message
@@ -213,7 +211,7 @@ export default {
         // Profile is complete, allow login
         this.showNotification("Login successful!", "success");
         setTimeout(() => {
-          this.$router.replace("/");
+          this.$router.replace(this.afterLoginPath());
         }, 1000);
       } catch (err) {
         if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
@@ -229,6 +227,16 @@ export default {
 
     goToSignup() {
       this.$router.push("/signup");
+    },
+
+    // Where to go after logging in: back to the page that sent the user here
+    // (e.g. a review QR link), or home. Only same-site paths are allowed.
+    afterLoginPath() {
+      const redirect = this.$route.query.redirect;
+      if (typeof redirect === "string" && redirect.startsWith("/") && !redirect.startsWith("//")) {
+        return redirect;
+      }
+      return "/";
     },
   },
 };

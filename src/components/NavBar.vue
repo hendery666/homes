@@ -2,7 +2,7 @@
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
-import { getFirestore, doc, getDoc, onSnapshot } from 'firebase/firestore'
+import { getFirestore, doc, onSnapshot } from 'firebase/firestore'
 import userPng from '../assets/user.png'
 import DarkModeToggle from './DarkModeToggle.vue'
 import { Icon } from '@iconify/vue'

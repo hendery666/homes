@@ -1,11 +1,11 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import {
-  getFirestore, collection, query, orderBy, limit, getDoc, getDocs, startAfter,
+  collection, query, orderBy, limit, getDoc, getDocs, startAfter,
   doc, setDoc, updateDoc, increment, arrayUnion, deleteDoc, onSnapshot, where,
   getCountFromServer, addDoc, serverTimestamp
 } from 'firebase/firestore'
-import { onAuthStateChanged, getAuth } from 'firebase/auth'
+import { onAuthStateChanged } from 'firebase/auth'
 import { db, auth } from '@/firebase'
 import { useRoute, useRouter } from 'vue-router'
 

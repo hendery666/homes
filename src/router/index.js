@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Profile from '../components/Profile.vue';
-// import LoginSignup from '../components/LoginSignup.vue';
 import AboutPage from '../components/AboutPage.vue';
 import HomePage from '@/components/HomePage.vue';
 import NewBusinessPage from '../components/NewBusiness.vue'
@@ -8,7 +7,6 @@ import Login from "@/components/Login.vue";
 import Signup from "@/components/Signup.vue";
 import ChatPage from '../components/ChatPage.vue';
 import ForgotPassword from '../components/ForgotPassword.vue';
-import NewBusiness from '../components/NewBusiness.vue';
 import Boosting from '../components/Boosting.vue'
 import UserProfile from '../components/UserProfile.vue'
 import EmailVerified from '../components/EmailVerified.vue'
@@ -51,10 +49,6 @@ const router = createRouter({
       name: 'profile',
       component: Profile, meta: {requiresAuth: true}
     },
-    // { path: '/signup', 
-    //   name: 'loginsignup',
-    //   component: LoginSignup, meta: {guestOnly: true}
-    // },
     { path: "/login", 
       name: 'login',
       component: Login
@@ -74,15 +68,17 @@ const router = createRouter({
       name: 'forgotpassword',
       component: ForgotPassword
     },
+    // Old URL for the create-listing page
     {
-      path:'/createService',
+      path: '/createService',
       name: 'createservice',
-      component: NewBusiness
+      redirect: '/newbusiness'
     },
     {
       path: '/boosting',
       name: 'Boosting',
-      component: Boosting
+      component: Boosting,
+      meta: { requiresAuth: true }
     },
     {
       path: '/user/:userId',

@@ -1,10 +1,8 @@
 <script setup>
-import { RouterLink, RouterView, useRoute } from "vue-router";
+import { RouterView, useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import NavBar from "./components/NavBar.vue";
 import Footer from "./components/Footer.vue";
-import Categories from "./components/Categories.vue";
-import Login from './components/Login.vue';
 import Toast from './components/Toast.vue';
 import { setToastInstance } from './composables/useToast';
 

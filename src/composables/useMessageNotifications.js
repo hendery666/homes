@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { auth, db } from '@/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
-import { collection, query, where, onSnapshot, doc, getDoc, setDoc, updateDoc, serverTimestamp, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore'
+import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs, Timestamp } from 'firebase/firestore'
 
 const unreadCount = ref(0)
 let unsubscribeChats = null

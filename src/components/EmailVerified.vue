@@ -13,7 +13,7 @@
 import { ref, onMounted } from 'vue'
 import { useDarkMode } from '@/composables/useDarkMode'
 import { auth } from '@/firebase'
-import { applyActionCode, isSignInWithEmailLink } from 'firebase/auth'
+import { applyActionCode } from 'firebase/auth'
 
 export default {
   name: 'EmailVerified',

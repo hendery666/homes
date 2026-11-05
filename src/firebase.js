@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, RecaptchaVerifier } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -18,6 +18,15 @@ const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const analytics = getAnalytics(app);
+// Analytics is optional: only start it when a measurement ID is configured and the
+// browser supports it (it throws in some privacy modes and when blocked by ad blockers).
+export let analytics = null;
+if (firebaseConfig.measurementId) {
+  isSupported()
+    .then((supported) => {
+      if (supported) analytics = getAnalytics(app);
+    })
+    .catch(() => {});
+}
 export const storage = getStorage(app);
 export { RecaptchaVerifier };
