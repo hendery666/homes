@@ -1,0 +1,338 @@
+/*
+ * Standardized Theme: Purple + White (Light & Dark Mode)
+ * Background: Beige (light) / Dark Gray (dark)
+ */
+
+:root {
+  /* Primary Purple Colors (same for both modes) */
+  --color-primary: #4b2aa6;
+  --color-primary-hover: #3d2287;
+  --color-primary-light: #6b4ac0;
+  --color-primary-lighter: #7a5af8;
+  --color-primary-pale: #e8e2f3;
+
+  /* Light Mode Colors */
+  --color-bg-main: rgb(245, 239, 239);  /* Beige background */
+  --color-bg-white: #ffffff;
+  --color-bg-purple-tint: #f8f5fb;
+  --color-text-primary: #2b2b2b;
+  --color-text-secondary: #666;
+  --color-text-light: #999;
+  --color-text-white: #ffffff;
+  --color-border: #e0e0e0;
+  --color-border-dark: #ccc;
+  --color-border-purple: #e1dbee;
+
+  /* Status Colors */
+  --color-success: #155724;
+  --color-error: #dc3545;
+  --color-warning: #ffc107;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(75, 42, 166, 0.12);
+  --shadow-lg: 0 8px 24px rgba(75, 42, 166, 0.15);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(75, 42, 166, 0.25);
+  --focus-ring-sm: 0 0 0 2px rgba(75, 42, 166, 0.5);
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+/* Dark Mode Colors */
+:root.dark-mode {
+  --color-bg-main: #1a1a1a;  /* Dark background */
+  --color-bg-white: #2d2d2d;  /* Dark cards */
+  --color-bg-purple-tint: #2a2436;  /* Dark purple tint */
+  --color-text-primary: #ffffff;  /* White text for dark mode */
+  --color-text-secondary: #e5e5e5;  /* Light gray text */
+  --color-text-light: #b0b0b0;  /* Lighter gray */
+  --color-border: #404040;  /* Dark borders */
+  --color-border-dark: #555;
+  --color-border-purple: #3d3348;
+  --color-primary-pale: #3d3348;  /* Darker purple pale */
+
+  /* Adjusted shadows for dark mode */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure all text is white in dark mode */
+:root.dark-mode body,
+:root.dark-mode #app,
+:root.dark-mode p,
+:root.dark-mode h1,
+:root.dark-mode h2,
+:root.dark-mode h3,
+:root.dark-mode h4,
+:root.dark-mode h5,
+:root.dark-mode h6,
+:root.dark-mode span,
+:root.dark-mode div,
+:root.dark-mode label,
+:root.dark-mode a:not(.btn) {
+  color: var(--color-text-primary) !important;
+}
+
+/* Standardized Hover Effects */
+.hover-lift {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.hover-scale {
+  transition: transform var(--transition-fast);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-brightness {
+  transition: filter var(--transition-fast), transform var(--transition-fast);
+}
+
+.hover-brightness:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.hover-bg-purple {
+  transition: background-color var(--transition-fast);
+}
+
+.hover-bg-purple:hover {
+  background-color: var(--color-primary-pale);
+}
+
+/* Standardized Focus States */
+.focus-ring:focus,
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Standardized Button Styles */
+.btn-primary-themed {
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+  border: none;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary-themed:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary-themed:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn-secondary-themed {
+  background-color: var(--color-bg-white);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  transition: all var(--transition-fast);
+}
+
+.btn-secondary-themed:hover {
+  background-color: var(--color-primary);
+  color: var(--color-text-white);
+  transform: translateY(-1px);
+}
+
+/* Override Bootstrap's default blue with purple */
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md) !important;
+}
+
+.btn-outline-primary {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  background-color: transparent;
+  transition: all var(--transition-fast);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Override Bootstrap badges to use purple */
+.badge.text-bg-primary,
+.badge.bg-primary {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES - MOBILE FIRST
+   ============================================ */
+
+/* Bootstrap Breakpoints:
+   - xs: < 576px (default mobile)
+   - sm: >= 576px (small devices)
+   - md: >= 768px (tablets)
+   - lg: >= 992px (desktops)
+   - xl: >= 1200px (large desktops)
+   - xxl: >= 1400px (extra large)
+*/
+
+/* Global responsive spacing adjustments */
+@media (max-width: 767.98px) {
+  :root {
+    --shadow-md: 0 3px 10px rgba(75, 42, 166, 0.1);
+    --shadow-lg: 0 6px 20px rgba(75, 42, 166, 0.12);
+  }
+
+  /* Reduce container padding on mobile */
+  .container,
+  .container-fluid {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Reduce heading sizes on mobile */
+  h1 { font-size: 1.75rem !important; }
+  h2 { font-size: 1.5rem !important; }
+  h3 { font-size: 1.25rem !important; }
+  h4 { font-size: 1.1rem !important; }
+  h5 { font-size: 1rem !important; }
+  h6 { font-size: 0.9rem !important; }
+
+  /* Reduce button sizes globally */
+  .btn {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .btn-sm {
+    font-size: 0.813rem !important;
+    padding: 0.375rem 0.75rem !important;
+  }
+
+  .btn-lg {
+    font-size: 1rem !important;
+    padding: 0.625rem 1.25rem !important;
+  }
+
+  /* Reduce card padding */
+  .card {
+    padding: 1.25rem !important;
+  }
+
+  .card-body {
+    padding: 1rem !important;
+  }
+
+  /* Make modals and drawers responsive */
+  .modal-dialog {
+    margin: 0.5rem !important;
+  }
+
+  .modal-content {
+    border-radius: 12px !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  :root {
+    --shadow-md: 0 2px 8px rgba(75, 42, 166, 0.08);
+    --shadow-lg: 0 4px 16px rgba(75, 42, 166, 0.1);
+  }
+
+  /* Further reduce container padding on small mobile */
+  .container,
+  .container-fluid {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Further reduce heading sizes */
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.25rem !important; }
+  h3 { font-size: 1.1rem !important; }
+  h4 { font-size: 1rem !important; }
+  h5 { font-size: 0.95rem !important; }
+
+  /* Even smaller buttons on small screens */
+  .btn {
+    font-size: 0.813rem !important;
+    padding: 0.4rem 0.875rem !important;
+  }
+
+  .btn-sm {
+    font-size: 0.75rem !important;
+    padding: 0.3rem 0.65rem !important;
+  }
+
+  /* Reduce form control sizes */
+  .form-control,
+  .form-select {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  /* Reduce card padding */
+  .card {
+    padding: 1rem !important;
+  }
+
+  .card-body {
+    padding: 0.75rem !important;
+  }
+
+  /* Stack flex items on very small screens */
+  .d-flex.gap-3 {
+    gap: 0.75rem !important;
+  }
+
+  .d-flex.gap-2 {
+    gap: 0.5rem !important;
+  }
+}
+
+/* Touch-friendly tap targets on mobile */
+@media (max-width: 767.98px) {
+  a, button, .btn, input[type="button"], input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Responsive font sizes using clamp() for fluid typography */
+@media (min-width: 576px) {
+  .display-1 { font-size: clamp(3rem, 5vw, 5rem) !important; }
+  .display-2 { font-size: clamp(2.5rem, 4.5vw, 4.5rem) !important; }
+  .display-3 { font-size: clamp(2rem, 4vw, 4rem) !important; }
+  .display-4 { font-size: clamp(1.75rem, 3.5vw, 3.5rem) !important; }
+}

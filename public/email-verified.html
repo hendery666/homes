@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verified</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 60px 40px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .icon {
+      width: 100px;
+      height: 100px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      font-size: 60px;
+      color: white;
+      animation: scaleIn 0.5s ease 0.2s both;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+
+    h1 {
+      color: #1f2937;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    p {
+      color: #6b7280;
+      font-size: 1.125rem;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .countdown {
+      color: #8b5cf6;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        padding: 40px 30px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .icon {
+        width: 80px;
+        height: 80px;
+        font-size: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">✓</div>
+    <h1>You are now verified!</h1>
+    <p>Please close this tab to continue with signup.</p>
+    <p class="countdown">This window will close automatically in <span id="timer">3</span> seconds...</p>
+  </div>
+
+  <script>
+    let seconds = 3;
+    const timerElement = document.getElementById('timer');
+
+    const countdown = setInterval(() => {
+      seconds--;
+      timerElement.textContent = seconds;
+
+      if (seconds === 0) {
+        clearInterval(countdown);
+        window.close();
+
+        // Fallback if window.close() doesn't work
+        setTimeout(() => {
+          document.querySelector('.countdown').textContent = 'Please close this tab manually.';
+        }, 500);
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

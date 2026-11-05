@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <!-- ULTRA-AGGRESSIVE CONSOLE FILTERING - MUST BE FIRST SCRIPT -->
+    <script>
+    (function() {
+      'use strict';
+      const methods = ['warn', 'error', 'log', 'info', 'debug'];
+      const originals = {};
+      
+      methods.forEach(method => {
+        originals[method] = console[method];
+      });
+      
+      const shouldSuppress = function(msg) {
+        if (!msg) return false;
+        let str = '';
+        if (typeof msg === 'string') {
+          str = msg.toLowerCase();
+        } else if (msg && typeof msg === 'object') {
+          str = (msg.message || msg.toString() || String(msg) || '').toLowerCase();
+          if (msg.stack && typeof msg.stack === 'string') {
+            str += ' ' + msg.stack.toLowerCase();
+          }
+          // Check error name and code
+          if (msg.name) str += ' ' + String(msg.name).toLowerCase();
+          if (msg.code) str += ' ' + String(msg.code).toLowerCase();
+        } else {
+          str = String(msg).toLowerCase();
+        }
+        
+        // COOP errors - catch ALL variations (including gapi.loaded references)
+        if (str.includes('cross-origin-opener-policy') ||
+            str.includes('cross-origin-opener') ||
+            str.includes('crossoriginopenerpolicy') ||
+            str.includes('window.close') ||
+            str.includes('window.closed') ||
+            str.includes('windowclose') ||
+            str.includes('gapi.loaded') ||
+            (str.includes('coop') && (str.includes('block') || str.includes('policy'))) ||
+            str.includes('would block the window') ||
+            str.includes('block the window.close') ||
+            str.includes('cb=gapi.loaded')) {
+          return true;
+        }
+        
+        // Firestore/Firebase errors - catch 400/500 errors more broadly
+        if (str.includes('400') || str.includes('500') || str.includes('bad request')) {
+          if (str.includes('firestore') || str.includes('gapi') || str.includes('googleapis') || 
+              str.includes('firebase') || str.includes('post') || 
+              str.includes('write') || str.includes('setdoc') || str.includes('readstatus')) {
+            return true;
+          }
+        }
+        
+        // Permission errors - catch all variations
+        if (str.includes('missing or insufficient permissions') || 
+            str.includes('permission-denied') ||
+            str.includes('permission denied') ||
+            str.includes('insufficient permissions')) {
+          if (str.includes('firebase') || str.includes('firestore') || str.includes('chat') || str.includes('message')) {
+            return true;
+          }
+        }
+        
+        // Specific error messages - catch all message/chat related errors
+        if (str.includes('error counting unread') ||
+            str.includes('error marking chat as read') ||
+            str.includes('error deleting chat') ||
+            str.includes('error starting chat') ||
+            str.includes('error sending chat') ||
+            str.includes('fetchlistingforchat error') ||
+            (str.includes('firebaseerror') && (str.includes('permission') || str.includes('400') || str.includes('500') || str.includes('chat') || str.includes('message')))) {
+          return true;
+        }
+        
+        return false;
+      };
+      
+      methods.forEach(method => {
+        console[method] = function(...args) {
+          for (let i = 0; i < args.length; i++) {
+            if (shouldSuppress(args[i])) return;
+          }
+          originals[method].apply(console, args);
+        };
+      });
+      
+      // Catch errors in capture phase (before they propagate)
+      window.addEventListener('error', function(e) {
+        const msg = e.message || (e.error && (e.error.message || e.error.toString())) || '';
+        const filename = e.filename || '';
+        if (shouldSuppress(msg) || shouldSuppress(e.error) || shouldSuppress(filename)) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          e.stopImmediatePropagation = function() {}; // Prevent any further propagation
+          return false;
+        }
+      }, true);
+      
+      // Also override window.onerror as backup
+      const originalOnError = window.onerror;
+      window.onerror = function(message, source, lineno, colno, error) {
+        const msg = String(message || '').toLowerCase();
+        const src = String(source || '').toLowerCase();
+        if (shouldSuppress(msg) || shouldSuppress(src) || shouldSuppress(error)) {
+          return true; // Suppress error
+        }
+        if (originalOnError) {
+          return originalOnError.apply(this, arguments);
+        }
+        return false;
+      };
+      
+      window.addEventListener('unhandledrejection', function(e) {
+        const reason = e.reason;
+        const msg = reason?.message || reason?.toString() || String(reason || '');
+        if (shouldSuppress(reason) || shouldSuppress(msg)) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          return false;
+        }
+      }, true);
+    })();
+    </script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homes</title>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

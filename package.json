@@ -1,0 +1,40 @@
+{
+    "name": "wad-project",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "start": "node server.js",
+        "server": "node server.js",
+        "dev:server": "node server.js"
+    },
+    "dependencies": {
+        "@iconify/iconify": "^3.1.1",
+        "@iconify/vue": "^5.0.0",
+        "@stripe/stripe-js": "^8.1.0",
+        "@vuepic/vue-datepicker": "^12.0.2",
+        "bootstrap": "^5.3.8",
+        "chart.js": "^4.5.1",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.1.0",
+        "firebase": "^12.3.0",
+        "node-fetch": "^3.3.2",
+        "qrcode": "^1.5.4",
+        "stripe": "^19.1.0",
+        "uuid": "^13.0.0",
+        "vue": "^3.5.22",
+        "vue-router": "^4.5.1"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^6.0.1",
+        "vite": "^7.1.9",
+        "vite-plugin-vue-devtools": "^8.0.2"
+    }
+}
